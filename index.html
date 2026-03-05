@@ -100,12 +100,7 @@ a{color:inherit;text-decoration:none}
 .screen-item h3{font-size:20px;font-weight:700;letter-spacing:-.3px;margin-bottom:8px;transition:color .3s}
 .screen-item:hover h3{color:var(--accent2)}
 .screen-item p{font-size:13px;color:var(--gray4);line-height:1.6}
-.screen-7{max-width:50%;padding:40px;transition:background .3s;background:var(--bg)}
-.screen-7:hover{background:var(--surface)}
-.screen-7 .num{font-family:var(--mono);font-size:12px;color:var(--gray4);letter-spacing:2px;font-weight:600;margin-bottom:12px}
-.screen-7 h3{font-size:20px;font-weight:700;letter-spacing:-.3px;margin-bottom:8px;transition:color .3s}
-.screen-7:hover h3{color:var(--accent2)}
-.screen-7 p{font-size:13px;color:var(--gray4);line-height:1.6}
+.screen-7{grid-column:1}
 
 .acts{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--border)}
 .act{padding:48px 40px;border-right:1px solid var(--border);position:relative}
@@ -180,7 +175,6 @@ a{color:inherit;text-decoration:none}
   .data-grid,.about-grid{grid-template-columns:1fr;gap:48px}
   .nav-in,.sec-in,.hero-in,.footer-in{padding:0 24px}
   .sec{padding:100px 0}
-  .screen-7{max-width:100%}
 }
 @media(max-width:768px){
   .nav-burger{display:flex}
@@ -298,9 +292,8 @@ a{color:inherit;text-decoration:none}
     <div class="rv screen-item" style="transition-delay:.18s"><div class="num">04</div><h3>Component Traceability</h3><p>Trace every component from raw material through every supplier tier to deployed drone. Full custody chain.</p></div>
     <div class="rv screen-item" style="transition-delay:.24s"><div class="num">05</div><h3>AI Command Center</h3><p>Natural language queries. &#x201C;Show me all single-source components from China&#x201D; &#x2192; instant structured analysis.</p></div>
     <div class="rv screen-item" style="transition-delay:.3s"><div class="num">06</div><h3>Disruption Simulation</h3><p>Select a scenario &#x2014; sanctions, export controls, conflict &#x2014; watch cascade impact animate through the network.</p></div>
+    <div class="rv screen-item screen-7" style="transition-delay:.36s"><div class="num">07</div><h3>Compliance Audit Trail</h3><p>ITAR, DFARS, NDAA &#xA7;848, ASDA/FASC, Blue UAS tracking per supplier with automated gap identification.</p></div>
   </div>
-  <div style="background:var(--border);height:1px"></div>
-  <div class="rv screen-7" style="transition-delay:.36s"><div class="num">07</div><h3>Compliance Audit Trail</h3><p>ITAR, DFARS, NDAA &#xA7;848, ASDA/FASC, Blue UAS tracking per supplier with automated gap identification.</p></div>
 </div>
 </section>
 
