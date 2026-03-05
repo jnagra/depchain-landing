@@ -144,6 +144,15 @@ a{color:inherit;text-decoration:none}
 .footer-links a{font-size:11px;color:var(--gray4);transition:color .3s}
 .footer-links a:hover{color:var(--gray2)}
 
+.nav-burger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px;z-index:102}
+.nav-burger span{display:block;width:20px;height:2px;background:var(--white)}
+.nav-mobile{position:fixed;inset:0;z-index:101;background:rgba(0,0,0,.97);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
+.nav-mobile.open{opacity:1;pointer-events:auto}
+.nav-mobile-links{display:flex;flex-direction:column;align-items:center;gap:48px}
+.nav-mobile-links a{font-size:24px;font-weight:600;color:var(--white);transition:color .3s}
+.nav-mobile-links a:hover{color:var(--gray2)}
+.nav-mobile-close{position:absolute;top:24px;right:24px;background:none;border:none;color:var(--white);font-size:28px;cursor:pointer;padding:8px;line-height:1}
+
 @keyframes pageIn{to{opacity:1}}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
@@ -163,8 +172,11 @@ a{color:inherit;text-decoration:none}
   .sec{padding:100px 0}
   .screen-7{max-width:100%}
 }
+@media(max-width:768px){
+  .nav-burger{display:flex}
+  .nav-links{display:none}
+}
 @media(max-width:640px){
-  .nav-links a:not(.btn){display:none}
   .stats{grid-template-columns:1fr}
   .stat-item{border-right:none;border-bottom:1px solid var(--border)}
   .stat-item:last-child{border-bottom:none}
@@ -206,8 +218,18 @@ a{color:inherit;text-decoration:none}
     <a href="#about">About</a>
     <a href="#access" class="btn btn-fill">Request Access</a>
   </div>
+  <button class="nav-burger" aria-label="Menu"><span></span><span></span><span></span></button>
 </div>
 </nav>
+<div class="nav-mobile" id="nav-mobile">
+  <button class="nav-mobile-close" id="nav-mobile-close" aria-label="Close menu">&#x2715;</button>
+  <div class="nav-mobile-links">
+    <a href="#problem">Problem</a>
+    <a href="#platform">Platform</a>
+    <a href="#about">About</a>
+    <a href="#access">Request Access</a>
+  </div>
+</div>
 
 <section class="hero">
 <div class="hero-grid"></div>
@@ -335,6 +357,7 @@ document.querySelectorAll('.stat-val').forEach(el=>cObs.observe(el));
 function animC(el){const end=+el.dataset.count,pre=el.dataset.prefix||'',suf=el.dataset.suffix||'';let c=0;const step=end/45;const iv=setInterval(()=>{c+=step;if(c>=end){el.textContent=pre+end+suf;clearInterval(iv)}else el.textContent=pre+Math.floor(c)+suf},30)}
 function submitEmail(){const email=document.getElementById('email').value;if(email.includes('@')){document.getElementById('cta-form-wrap').innerHTML='<div class="cta-success"><span class="cta-success-icon">&#x2713;</span><div class="cta-success-text"><strong>You\'re on the list</strong><span>We\'ll reach out within 48 hours.</span></div></div>'}}
 document.getElementById('email')?.addEventListener('keydown',e=>{if(e.key==='Enter')submitEmail()});
+(function(){const mob=document.getElementById('nav-mobile');document.querySelector('.nav-burger').addEventListener('click',()=>mob.classList.add('open'));document.getElementById('nav-mobile-close').addEventListener('click',()=>mob.classList.remove('open'));mob.querySelectorAll('.nav-mobile-links a').forEach(a=>a.addEventListener('click',()=>mob.classList.remove('open')))})();
 </script>
 </body>
 </html>
