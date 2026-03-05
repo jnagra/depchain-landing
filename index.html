@@ -60,18 +60,41 @@ a{color:inherit;text-decoration:none}
 .hero-sub{font-size:18px;font-weight:400;color:var(--gray3);max-width:560px;line-height:1.7;margin-bottom:48px}
 .hero-btns{display:flex;gap:16px;margin-bottom:80px}
 
-.trace-pre{border:1px solid var(--border);border-radius:4px;padding:24px 28px;background:var(--surface);max-width:880px}
-.trace-pre-label{font-family:var(--mono);font-size:10px;letter-spacing:2.5px;color:var(--gray4);font-weight:600;margin-bottom:16px;text-transform:uppercase}
-.trace-flow{display:flex;align-items:center;gap:0;overflow-x:auto;padding:4px 0}
-.t-node{flex-shrink:0;padding:12px 18px;border-left:2px solid var(--border2);background:var(--surface2);position:relative;min-width:130px;opacity:0;animation:fadeIn .5s ease forwards}
-.t-node-name{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:1px;margin-bottom:2px}
-.t-node-loc{font-size:11px;color:var(--gray4)}
-.t-node.crit{border-left-color:var(--accent)}.t-node.crit .t-node-name{color:var(--accent)}
-.t-node.warn{border-left-color:#D4913A}.t-node.warn .t-node-name{color:#D4913A}
-.t-node.ok{border-left-color:#2E8B57}.t-node.ok .t-node-name{color:#2E8B57}
-.t-tag{position:absolute;top:-6px;right:-4px;background:var(--accent);color:var(--white);font-size:7px;font-weight:800;padding:1px 5px;border-radius:1px;letter-spacing:.5px}
-.t-line{width:24px;height:1px;background:var(--border2);flex-shrink:0;position:relative}
-.t-dot{position:absolute;top:-2px;width:5px;height:5px;border-radius:50%;background:var(--gray4);animation:flowDot 2s ease-in-out infinite}
+.platform-mock{background:#0A0A0A;border:1px solid #1A1A1A;border-radius:8px;box-shadow:0 40px 80px rgba(0,0,0,.5);max-width:960px;overflow:hidden;transition:transform .5s cubic-bezier(.16,1,.3,1)}
+.platform-mock:hover{transform:perspective(1200px) rotateX(2deg)}
+.pm-topbar{height:32px;background:#111;border-bottom:1px solid #1A1A1A;display:flex;align-items:center;position:relative}
+.pm-dots{display:flex;gap:6px;margin-left:12px}
+.pm-dot{width:8px;height:8px;border-radius:50%}
+.pm-dot--r{background:#FF5F57}.pm-dot--y{background:#FFBD2E}.pm-dot--g{background:#28C840}
+.pm-topbar-title{position:absolute;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:10px;color:#333}
+.pm-body{display:flex;min-height:340px}
+.pm-sidebar{width:180px;background:#0A0A0A;border-right:1px solid #1A1A1A;padding:8px 0;flex-shrink:0}
+.pm-nav-item{display:flex;align-items:center;gap:8px;padding:6px 12px;font-family:var(--mono);font-size:9px;color:#444;cursor:default}
+.pm-nav-item.active{background:#111;color:#fff;border-left:2px solid #fff;padding-left:10px}
+.pm-nav-dot{width:4px;height:4px;border-radius:50%;flex-shrink:0}
+.pm-main{flex:1;background:#050505;display:flex;flex-direction:column;min-width:0}
+.pm-metrics{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid #1A1A1A}
+.pm-metric{padding:12px;border-right:1px solid #1A1A1A}
+.pm-metric:last-child{border-right:none}
+.pm-metric-label{font-family:var(--mono);font-size:8px;color:#333;letter-spacing:1px;margin-bottom:4px}
+.pm-metric-val{font-family:var(--mono);font-size:20px;color:#fff}
+.pm-metric-val.alert{color:#C8102E}
+.pm-map{height:200px;background:#080808;position:relative;overflow:hidden;flex:1}
+.pm-map svg{width:100%;height:100%}
+.pm-city{font-family:var(--mono);font-size:7px;fill:#444}
+.pm-node{fill:#333}
+.pm-node-risk{fill:#C8102E;animation:pulse 2s ease-in-out infinite}
+.pm-route{fill:none;stroke:#1A1A1A;stroke-width:1.5}
+.pm-route-risk{fill:none;stroke:#C8102E;stroke-width:1.5;opacity:.6;stroke-dasharray:6 4;animation:routeFlow 1.5s linear infinite}
+.pm-route-flow{fill:none;stroke:#1A1A1A;stroke-width:1.5;stroke-dasharray:6 4;animation:routeFlow 2s linear infinite}
+.pm-alertbar{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-top:1px solid #1A1A1A;background:#0A0A0A}
+.pm-alertbar-left{display:flex;align-items:center;gap:8px}
+.pm-alert-dot{width:6px;height:6px;border-radius:50%;background:#C8102E;animation:pulse 2s ease-in-out infinite}
+.pm-alertbar-text{font-family:var(--mono);font-size:10px;color:#666}
+.pm-alertbar-text em{font-style:normal;color:#C8102E}
+.pm-alertbar-link{font-family:var(--mono);font-size:10px;color:#444;flex-shrink:0}
+@keyframes routeFlow{to{stroke-dashoffset:-20}}
+@media(max-width:768px){.pm-sidebar{display:none}.pm-metrics{grid-template-columns:repeat(2,1fr)}.pm-body{min-height:280px}}
 
 .sec{padding:160px 0}
 .sec-in{max-width:1400px;margin:0 auto;padding:0 48px}
@@ -244,20 +267,55 @@ a{color:inherit;text-decoration:none}
   <div class="rv" style="transition-delay:.2s"><p class="hero-sub">DepChain maps every component in your drone &#x2014; mine to mission &#x2014; exposing adversarial-nation chokepoints, compliance gaps, and single points of failure before they shut down your production line.</p></div>
   <div class="rv" style="transition-delay:.3s"><div class="hero-btns"><a href="#access" class="btn btn-fill">Request Early Access</a><a href="#platform" class="btn btn-outline">See the Platform &#x2192;</a></div></div>
   <div class="rv" style="transition-delay:.45s">
-    <div class="trace-pre">
-      <div class="trace-pre-label">Live Trace &#x2014; Brushless DC Motor &#x2192; MQ-Series Drone</div>
-      <div class="trace-flow">
-        <div class="t-node crit" style="animation-delay:0s"><div class="t-node-name">&#x1F1E8;&#x1F1F3; RARE EARTH MINE</div><div class="t-node-loc">Inner Mongolia</div><div class="t-tag">RISK</div></div>
-        <div class="t-line"><div class="t-dot" style="background:var(--accent)"></div></div>
-        <div class="t-node crit" style="animation-delay:.1s"><div class="t-node-name">&#x1F1E8;&#x1F1F3; REFINING</div><div class="t-node-loc">Baotou, China</div><div class="t-tag">RISK</div></div>
-        <div class="t-line"><div class="t-dot" style="background:#D4913A;animation-delay:.15s"></div></div>
-        <div class="t-node warn" style="animation-delay:.2s"><div class="t-node-name">&#x1F1EF;&#x1F1F5; MAGNET MFG</div><div class="t-node-loc">Takefu, Japan</div></div>
-        <div class="t-line"><div class="t-dot" style="background:#D4913A;animation-delay:.3s"></div></div>
-        <div class="t-node warn" style="animation-delay:.3s"><div class="t-node-name">&#x1F1E8;&#x1F1F3; MOTOR ASSEMBLY</div><div class="t-node-loc">Nanchang, China</div></div>
-        <div class="t-line"><div class="t-dot" style="background:#2E8B57;animation-delay:.45s"></div></div>
-        <div class="t-node ok" style="animation-delay:.4s"><div class="t-node-name">&#x1F1FA;&#x1F1F8; INTEGRATION</div><div class="t-node-loc">San Diego, USA</div></div>
-        <div class="t-line"><div class="t-dot" style="background:#2E8B57;animation-delay:.6s"></div></div>
-        <div class="t-node ok" style="animation-delay:.5s"><div class="t-node-name">&#x1F3AF; DEPLOYED</div><div class="t-node-loc">Theater</div></div>
+    <div class="platform-mock">
+      <div class="pm-topbar">
+        <div class="pm-dots"><div class="pm-dot pm-dot--r"></div><div class="pm-dot pm-dot--y"></div><div class="pm-dot pm-dot--g"></div></div>
+        <span class="pm-topbar-title">DepChain &#x2014; Global Command View</span>
+      </div>
+      <div class="pm-body">
+        <div class="pm-sidebar">
+          <div class="pm-nav-item active"><div class="pm-nav-dot" style="background:#fff"></div>Command View</div>
+          <div class="pm-nav-item"><div class="pm-nav-dot" style="background:#444"></div>Network Graph</div>
+          <div class="pm-nav-item"><div class="pm-nav-dot" style="background:#444"></div>Risk Dashboard</div>
+          <div class="pm-nav-item"><div class="pm-nav-dot" style="background:#444"></div>Traceability</div>
+          <div class="pm-nav-item"><div class="pm-nav-dot" style="background:#444"></div>AI Center</div>
+          <div class="pm-nav-item"><div class="pm-nav-dot" style="background:#444"></div>Simulation</div>
+          <div class="pm-nav-item"><div class="pm-nav-dot" style="background:#444"></div>Compliance</div>
+        </div>
+        <div class="pm-main">
+          <div class="pm-metrics">
+            <div class="pm-metric"><div class="pm-metric-label">ACTIVE SUPPLIERS</div><div class="pm-metric-val">247</div></div>
+            <div class="pm-metric"><div class="pm-metric-label">RISK SCORE</div><div class="pm-metric-val">0.73</div></div>
+            <div class="pm-metric"><div class="pm-metric-label">CHINA EXPOSURE</div><div class="pm-metric-val">67.2%</div></div>
+            <div class="pm-metric"><div class="pm-metric-label">ALERTS</div><div class="pm-metric-val alert">3</div></div>
+          </div>
+          <div class="pm-map">
+            <svg viewBox="0 0 700 200" preserveAspectRatio="xMidYMid meet">
+              <!-- Supply routes -->
+              <path class="pm-route-risk" d="M120,100 Q220,40 340,90"/>
+              <path class="pm-route-flow" d="M340,90 Q420,130 480,80"/>
+              <path class="pm-route-flow" d="M480,80 Q560,50 620,100"/>
+              <path class="pm-route" d="M120,100 Q180,160 260,140"/>
+              <path class="pm-route" d="M260,140 Q310,120 340,90"/>
+              <!-- Supplier nodes -->
+              <circle class="pm-node-risk" cx="120" cy="100" r="5"/>
+              <text class="pm-city" x="108" y="120">Beijing</text>
+              <circle class="pm-node" cx="260" cy="140" r="4"/>
+              <text class="pm-city" x="248" y="158">Taipei</text>
+              <circle class="pm-node" cx="340" cy="90" r="4"/>
+              <text class="pm-city" x="330" y="80">Tokyo</text>
+              <circle class="pm-node" cx="480" cy="80" r="4"/>
+              <text class="pm-city" x="458" y="72">San Diego</text>
+              <circle class="pm-node" cx="620" cy="100" r="4"/>
+              <text class="pm-city" x="601" y="118">Huntsville</text>
+              <circle class="pm-node" cx="180" cy="60" r="3"/>
+            </svg>
+          </div>
+          <div class="pm-alertbar">
+            <div class="pm-alertbar-left"><div class="pm-alert-dot"></div><span class="pm-alertbar-text">ALERT: Chinese rare earth export controls detected &#x2014; <em>3 components</em> affected</span></div>
+            <span class="pm-alertbar-link">VIEW &#x2192;</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
