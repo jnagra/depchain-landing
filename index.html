@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DepChain — Supply Chain Visibility for Defense Drones</title>
 <meta name="description" content="DepChain maps every component in your drone — mine to mission — exposing adversarial-nation chokepoints, compliance gaps, and single points of failure.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://www.depchain.io/">
+<meta name="theme-color" content="#000000">
+<meta name="author" content="DepChain">
 <meta property="og:title" content="DepChain — Supply Chain Visibility for Defense Drones">
 <meta property="og:description" content="Your drones depend on China. You can't see it. DepChain maps every component from mine to mission.">
 <meta property="og:type" content="website">
@@ -171,6 +175,7 @@ a{color:inherit;text-decoration:none}
 .footer-links{display:flex;gap:24px}
 .footer-links a{font-size:11px;color:var(--gray4);transition:color .3s}
 .footer-links a:hover{color:var(--gray2)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 
 .nav-burger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px;z-index:102}
 .nav-burger span{display:block;width:20px;height:2px;background:var(--white)}
@@ -215,7 +220,7 @@ a{color:inherit;text-decoration:none}
 </head>
 <body>
 
-<nav class="nav" id="nav">
+<nav class="nav" id="nav" aria-label="Main navigation">
 <div class="nav-in">
   <a href="#" class="nav-logo">
     <svg width="28" height="28" viewBox="0 0 64 64" fill="none">
@@ -245,7 +250,7 @@ a{color:inherit;text-decoration:none}
     <a href="#about">About</a>
     <a href="#access" class="btn btn-fill">Request Access</a>
   </div>
-  <button class="nav-burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  <button class="nav-burger" aria-label="Open menu"><span></span><span></span><span></span></button>
 </div>
 </nav>
 <div class="nav-mobile" id="nav-mobile">
@@ -258,7 +263,7 @@ a{color:inherit;text-decoration:none}
   </div>
 </div>
 
-<section class="hero">
+<section class="hero" role="main">
 <div class="hero-grid"></div>
 <div class="hero-grad"></div>
 <div class="hero-in">
@@ -391,7 +396,7 @@ a{color:inherit;text-decoration:none}
     <div class="sec-label" style="text-align:center">Early Access</div>
     <h2>See what&#x2019;s inside your<br>supply chain</h2>
     <p>We&#x2019;re onboarding design partners &#x2014; drone OEMs and component suppliers with NDAA compliance obligations.</p>
-    <div id="cta-form-wrap"><div class="cta-form"><input type="email" id="email" class="cta-input" placeholder="your@company.com"><button onclick="submitEmail()" class="cta-submit">Request Access</button></div></div>
+    <div id="cta-form-wrap"><div class="cta-form"><label class="sr-only" for="email">Work email</label><input type="email" id="email" class="cta-input" placeholder="your@company.com"><button onclick="submitEmail()" class="cta-submit">Request Access</button></div></div>
     <p class="cta-note">For drone manufacturers, component suppliers, and defense program managers.</p>
   </div>
 </div>
@@ -404,7 +409,7 @@ a{color:inherit;text-decoration:none}
     <span>DEPCHAIN</span>
   </div>
   <div class="footer-copy">&#xA9; 2026 DepChain &#xB7; Supply chain visibility for defense drones</div>
-  <div class="footer-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Contact</a></div>
+  <div class="footer-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="mailto:contact@depchain.io">Contact</a></div>
 </div>
 </footer>
 
@@ -419,6 +424,8 @@ function animC(el){const end=+el.dataset.count,pre=el.dataset.prefix||'',suf=el.
 function submitEmail(){const email=document.getElementById('email').value;if(email.includes('@')){document.getElementById('cta-form-wrap').innerHTML='<div class="cta-success"><span class="cta-success-icon">&#x2713;</span><div class="cta-success-text"><strong>You\'re on the list</strong><span>We\'ll reach out within 48 hours.</span></div></div>'}}
 document.getElementById('email')?.addEventListener('keydown',e=>{if(e.key==='Enter')submitEmail()});
 (function(){const mob=document.getElementById('nav-mobile');document.querySelector('.nav-burger').addEventListener('click',()=>mob.classList.add('open'));document.getElementById('nav-mobile-close').addEventListener('click',()=>mob.classList.remove('open'));mob.querySelectorAll('.nav-mobile-links a').forEach(a=>a.addEventListener('click',()=>mob.classList.remove('open')))})();
+// Ensure below-the-fold media does not block rendering.
+document.querySelectorAll('img,iframe').forEach(el=>{if(!el.closest('.hero')){el.setAttribute('loading','lazy');if(el.tagName==='IMG')el.setAttribute('decoding','async')}})
 </script>
 </body>
 </html>
