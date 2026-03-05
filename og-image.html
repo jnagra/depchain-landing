@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1200">
+<title>DepChain OG Image</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;800&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  width: 1200px;
+  height: 630px;
+  background: #050505;
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
+  position: relative;
+}
+.content {
+  padding: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+.logo-mark {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 16px;
+}
+.brand {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  letter-spacing: 4px;
+  color: #666;
+  margin-bottom: 40px;
+}
+.headline {
+  font-size: 52px;
+  font-weight: 800;
+  line-height: 1.15;
+  color: #fff;
+  margin-bottom: 4px;
+}
+.headline-red {
+  font-size: 52px;
+  font-weight: 800;
+  line-height: 1.15;
+  color: #C8102E;
+  margin-bottom: 32px;
+}
+.sub {
+  font-size: 18px;
+  color: #666;
+}
+.trace {
+  position: absolute;
+  bottom: 48px;
+  right: 80px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+.trace-box {
+  width: 28px;
+  height: 16px;
+  border: 1px solid #333;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 7px;
+  color: #555;
+  letter-spacing: 0.5px;
+}
+.trace-line {
+  width: 20px;
+  height: 1px;
+  background: #333;
+  position: relative;
+}
+.trace-line::after {
+  content: '';
+  position: absolute;
+  right: -2px;
+  top: -2px;
+  border: solid #333;
+  border-width: 0 1px 1px 0;
+  padding: 2px;
+  transform: rotate(-45deg);
+}
+</style>
+</head>
+<body>
+  <div class="content">
+    <svg class="logo-mark" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <g stroke="white" stroke-opacity="0.3" stroke-width="0.8" fill="white" fill-opacity="0.3">
+        <line x1="32" y1="30" x2="32" y2="8"/><circle cx="32" cy="8" r="1.5"/>
+        <line x1="32" y1="30" x2="50" y2="14"/><circle cx="50" cy="14" r="1.5"/>
+        <line x1="32" y1="30" x2="56" y2="30"/><circle cx="56" cy="30" r="1.5"/>
+        <line x1="32" y1="30" x2="50" y2="48"/><circle cx="50" cy="48" r="1.5"/>
+        <line x1="32" y1="30" x2="32" y2="56"/><circle cx="32" cy="56" r="1.5"/>
+        <line x1="32" y1="30" x2="14" y2="48"/><circle cx="14" cy="48" r="1.5"/>
+        <line x1="32" y1="30" x2="8" y2="30"/><circle cx="8" cy="30" r="1.5"/>
+        <line x1="32" y1="30" x2="14" y2="14"/><circle cx="14" cy="14" r="1.5"/>
+      </g>
+      <polygon points="32,20 34.4,27.2 42,27.2 36,31.6 38.2,39 32,34.4 25.8,39 28,31.6 22,27.2 29.6,27.2" fill="white"/>
+    </svg>
+    <div class="brand">DEPCHAIN</div>
+    <div class="headline">Your drones depend on China.</div>
+    <div class="headline-red">You can't see it.</div>
+    <div class="sub">Supply chain visibility for defense drones</div>
+  </div>
+  <div class="trace">
+    <div class="trace-box">CN</div>
+    <div class="trace-line"></div>
+    <div class="trace-box">JP</div>
+    <div class="trace-line"></div>
+    <div class="trace-box">US</div>
+  </div>
+</body>
+</html>
