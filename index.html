@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DepChain — Supply Chain Visibility for Defense Drones</title>
+<meta name="description" content="DepChain maps every component in your drone — mine to mission — exposing adversarial-nation chokepoints, compliance gaps, and single points of failure.">
+<meta property="og:title" content="DepChain — Supply Chain Visibility for Defense Drones">
+<meta property="og:description" content="Your drones depend on China. You can't see it. DepChain maps every component from mine to mission.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Source+Sans+3:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080C14;--bgCard:#0F1520;--bgPanel:#141C2B;--border:#1E2A3F;--borderHover:#2A3B55;--navy:#1B3A6B;--navyLight:#254D8C;--crimson:#8B1F2E;--crimsonLight:#B52A3C;--crimsonDark:#6B1722;--red:#DC3545;--amber:#D4913A;--green:#2E8B57;--cyan:#4A90B8;--text:#E8ECF2;--textMuted:#8494A7;--textDim:#556677;--white:#F4F6F9;--mono:'IBM Plex Mono',monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Source Sans 3',-apple-system,sans-serif;line-height:1.6}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1100px;margin:0 auto;padding:0 28px}
+.section{padding:96px 0}
+.section--dark{background:var(--bgCard);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.label{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:14px;font-family:var(--mono)}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .65s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* Nav */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;height:60px;transition:all .3s;border-bottom:1px solid transparent}
+.nav.scrolled{background:rgba(8,12,20,.94);backdrop-filter:blur(12px);border-bottom-color:var(--border)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:100%}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.nav-logo span{font-family:var(--mono);font-weight:700;font-size:16px;letter-spacing:3px;color:var(--textMuted)}
+.nav-links{display:flex;align-items:center;gap:28px}
+.nav-links a{color:var(--textMuted);font-size:13px;font-weight:600;letter-spacing:.3px;transition:color .2s}
+.nav-links a:hover{color:var(--text)}
+.btn-cta{background:var(--crimson);color:#fff!important;padding:7px 18px;border-radius:6px;font-size:12px;font-weight:700;letter-spacing:.4px;transition:background .2s}
+.btn-cta:hover{background:var(--crimsonLight)}
+
+/* Hero */
+.hero{position:relative;padding-top:130px;padding-bottom:72px;overflow:hidden}
+.hero-grid{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(30,42,63,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(30,42,63,.12) 1px,transparent 1px);background-size:72px 72px;-webkit-mask-image:radial-gradient(ellipse 70% 55% at 50% 25%,black 15%,transparent 65%);mask-image:radial-gradient(ellipse 70% 55% at 50% 25%,black 15%,transparent 65%)}
+.hero-glow{position:absolute;top:-15%;left:15%;width:500px;height:500px;background:radial-gradient(circle,rgba(27,58,107,.09) 0%,transparent 70%);border-radius:50%;filter:blur(60px);pointer-events:none}
+.alert-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(139,31,46,.08);border:1px solid rgba(139,31,46,.19);border-radius:4px;padding:5px 14px;margin-bottom:28px}
+.alert-dot{width:6px;height:6px;border-radius:50%;background:var(--red);animation:pulse 2s ease-in-out infinite}
+.alert-text{font-size:10.5px;font-weight:700;color:var(--crimsonLight);font-family:var(--mono);letter-spacing:1.2px}
+h1{font-size:clamp(32px,5vw,56px);font-weight:800;line-height:1.1;max-width:740px;margin-bottom:20px;letter-spacing:-1px;color:var(--white)}
+.glitch-wrap{color:var(--crimsonLight);position:relative;display:inline-block}
+.glitch-base{position:relative;display:inline-block;animation:glitch 3s infinite}
+.glitch-top{position:absolute;top:0;left:2px;color:var(--red);clip-path:inset(20% 0 40% 0);animation:glitch-top 3s infinite linear}
+.glitch-bottom{position:absolute;top:0;left:-2px;color:var(--cyan);clip-path:inset(50% 0 10% 0);animation:glitch-bottom 3s infinite linear}
+.hero-sub{font-size:17px;color:var(--textMuted);max-width:580px;line-height:1.7;margin-bottom:32px}
+.hero-buttons{display:flex;gap:12px;margin-bottom:48px}
+.btn-primary{background:var(--crimson);color:#fff;padding:12px 28px;border-radius:6px;font-size:14px;font-weight:700;transition:background .2s}
+.btn-primary:hover{background:var(--crimsonLight)}
+.btn-secondary{background:transparent;border:1px solid var(--border);color:var(--textMuted);padding:12px 28px;border-radius:6px;font-size:14px;font-weight:600;transition:all .2s}
+.btn-secondary:hover{border-color:var(--borderHover);color:var(--text)}
+
+/* Trace flow */
+.trace-box{background:var(--bgCard);border:1px solid var(--border);border-radius:8px;padding:14px 18px;overflow:hidden}
+.trace-label{font-size:9.5px;font-family:var(--mono);color:var(--textDim);letter-spacing:1.5px;font-weight:600;margin-bottom:6px}
+.trace-flow{display:flex;align-items:center;overflow-x:auto;padding:12px 0;gap:0}
+.trace-node{background:var(--bgPanel);border:1px solid var(--border);border-radius:6px;padding:10px 14px;min-width:128px;position:relative;flex-shrink:0;opacity:0;animation:fadeUp .4s ease forwards}
+.trace-node-name{font-size:9px;font-family:var(--mono);font-weight:700;letter-spacing:1.2px}
+.trace-node-loc{font-size:10px;color:var(--textDim);margin-top:2px}
+.trace-risk{position:absolute;top:-5px;right:-5px;background:var(--red);color:#fff;font-size:7px;font-weight:800;padding:1px 4px;border-radius:3px}
+.trace-connector{width:20px;height:1px;background:var(--border);flex-shrink:0;position:relative}
+.trace-dot{position:absolute;top:-2px;width:5px;height:5px;border-radius:50%;opacity:.7;animation:flowDot 1.8s ease-in-out infinite}
+
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr)}
+.stat{text-align:center;padding:20px 12px}
+.stat:not(:last-child){border-right:1px solid var(--border)}
+.stat-value{font-size:36px;font-weight:800;font-family:var(--mono);letter-spacing:-1px}
+.stat-label{font-size:11.5px;color:var(--textDim);margin-top:6px;line-height:1.4}
+
+/* Cards grid */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.crisis-card{background:var(--bgCard);border:1px solid var(--border);border-radius:8px;padding:24px;display:flex;flex-direction:column;height:100%}
+.crisis-tag{font-size:9.5px;font-family:var(--mono);font-weight:700;letter-spacing:1.5px;margin-bottom:10px}
+.crisis-title{font-size:18px;font-weight:700;margin-bottom:8px;color:var(--white)}
+.crisis-body{font-size:13.5px;color:var(--textMuted);line-height:1.65;flex:1}
+.crisis-stat{margin-top:14px;padding:8px 12px;border-radius:5px;font-size:11px;font-family:var(--mono);font-weight:600}
+
+/* Screen cards */
+.screens-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.screen-card{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:22px;transition:border-color .25s,transform .25s;cursor:default}
+.screen-card:hover{transform:translateY(-2px)}
+.screen-num{font-size:10px;font-family:var(--mono);font-weight:700;letter-spacing:1.5px;margin-bottom:8px}
+.screen-title{font-size:15px;font-weight:700;color:var(--white);margin-bottom:6px}
+.screen-desc{font-size:12.5px;color:var(--textMuted);line-height:1.6}
+
+/* Acts */
+.acts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+.act-card{background:var(--bgCard);border:1px solid var(--border);border-radius:8px;padding:28px;position:relative;overflow:hidden}
+.act-bg{position:absolute;top:14px;right:18px;font-size:64px;font-weight:900;font-family:var(--mono);opacity:.03}
+.act-badge{display:inline-block;padding:3px 8px;border-radius:4px;font-size:9.5px;font-family:var(--mono);font-weight:700;letter-spacing:1.5px;margin-bottom:14px}
+.act-title{font-size:18px;font-weight:700;margin-bottom:10px;color:var(--white)}
+.act-body{font-size:13px;color:var(--textMuted);line-height:1.7}
+
+/* Two column */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:48px}
+.tag-wrap{display:flex;flex-wrap:wrap;gap:8px}
+.tag{background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:6px 12px;font-size:11px;font-family:var(--mono);font-weight:500;color:var(--textDim)}
+.tag-color{background:var(--bg);border-radius:5px;padding:6px 12px;font-size:11px;font-family:var(--mono);font-weight:600}
+
+/* Why + Validation */
+.feature-item{padding:12px 16px;background:var(--bgCard);border:1px solid var(--border);border-radius:6px;margin-bottom:8px}
+.feature-title{font-size:13px;font-weight:700;color:var(--white)}
+.feature-desc{font-size:12px;color:var(--textDim);margin-top:2px}
+.quote{border-left:2px solid rgba(212,145,58,.25);padding-left:14px;margin-bottom:18px}
+.quote p{font-size:13px;color:var(--text);line-height:1.6;margin-bottom:4px}
+.quote cite{font-size:10px;color:var(--textDim);font-family:var(--mono);font-style:normal}
+
+/* CTA */
+.cta-glow{position:absolute;inset:0;background:radial-gradient(ellipse 50% 50% at 50% 80%,rgba(139,31,46,.03),transparent);pointer-events:none}
+.cta-inner{text-align:center;max-width:520px;margin:0 auto}
+.cta-form{display:flex;gap:8px;max-width:420px;margin:0 auto}
+.cta-input{flex:1;background:var(--bgCard);border:1px solid var(--border);border-radius:6px;padding:12px 16px;color:var(--text);font-size:14px;outline:none;font-family:inherit;transition:border-color .2s}
+.cta-input:focus{border-color:rgba(139,31,46,.38)}
+.cta-btn{background:var(--crimson);color:#fff;padding:12px 24px;border-radius:6px;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:inherit;transition:background .2s}
+.cta-btn:hover{background:var(--crimsonLight)}
+.cta-success{display:inline-flex;align-items:center;gap:10px;background:rgba(46,139,87,.08);border:1px solid rgba(46,139,87,.19);border-radius:8px;padding:16px 24px}
+
+/* Footer */
+.footer{border-top:1px solid var(--border);padding:32px 0}
+.footer-inner{display:flex;justify-content:space-between;align-items:center}
+.footer-logo{display:flex;align-items:center;gap:8px;opacity:.5}
+.footer-logo span{font-family:var(--mono);font-weight:600;font-size:11px;letter-spacing:2.5px;color:var(--textMuted)}
+.footer-copy{font-size:11px;color:var(--textDim)}
+.footer-links{display:flex;gap:20px}
+.footer-links a{font-size:11px;color:var(--textDim)}
+
+/* Animations */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes flowDot{0%{left:0;opacity:.9}100%{left:100%;opacity:.2}}
+@keyframes glitch{0%,90%,100%{transform:translate(0)}92%{transform:translate(-2px,1px)}94%{transform:translate(2px,-1px)}96%{transform:translate(-1px,-2px)}98%{transform:translate(1px,2px)}}
+@keyframes glitch-top{0%,90%,100%{clip-path:inset(20% 0 40% 0);transform:translate(0)}91%{clip-path:inset(10% 0 55% 0);transform:translate(4px,-1px)}93%{clip-path:inset(30% 0 30% 0);transform:translate(-3px,2px)}95%{clip-path:inset(5% 0 60% 0);transform:translate(2px,1px)}97%{clip-path:inset(40% 0 20% 0);transform:translate(-4px,-1px)}99%{clip-path:inset(15% 0 50% 0);transform:translate(3px,2px)}}
+@keyframes glitch-bottom{0%,90%,100%{clip-path:inset(50% 0 10% 0);transform:translate(0)}91%{clip-path:inset(60% 0 5% 0);transform:translate(-3px,1px)}93%{clip-path:inset(45% 0 15% 0);transform:translate(4px,-2px)}95%{clip-path:inset(55% 0 8% 0);transform:translate(-2px,-1px)}97%{clip-path:inset(48% 0 12% 0);transform:translate(3px,1px)}99%{clip-path:inset(52% 0 6% 0);transform:translate(-4px,2px)}}
+
+@media(max-width:768px){
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .stat:nth-child(2){border-right:none}
+  .two-col{grid-template-columns:1fr;gap:32px}
+  .nav-links a:not(.btn-cta){display:none}
+  .footer-inner{flex-direction:column;gap:12px;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+<div class="wrap nav-inner">
+  <div class="nav-logo">
+    <svg width="54" height="34" viewBox="0 0 64 64" fill="none"><line x1="32" y1="32" x2="32" y2="10" stroke="#1B3A6B" stroke-width=".8"/><circle cx="32" cy="10" r="1.8" fill="#1B3A6B"/><line x1="32" y1="32" x2="40" y2="12" stroke="#1B3A6B" stroke-width=".8"/><circle cx="40" cy="12" r="1.8" fill="#1B3A6B"/><line x1="32" y1="32" x2="47" y2="16" stroke="#1B3A6B" stroke-width=".8"/><circle cx="47" cy="16" r="1.8" fill="#1B3A6B"/><line x1="32" y1="32" x2="52" y2="22" stroke="#1B3A6B" stroke-width=".8"/><circle cx="52" cy="22" r="1.8" fill="#1B3A6B"/><line x1="32" y1="32" x2="54" y2="29" stroke="#1B3A6B" stroke-width=".8"/><circle cx="54" cy="29" r="1.8" fill="#1B3A6B"/><line x1="32" y1="32" x2="53" y2="38" stroke="#1B3A6B" stroke-width=".8"/><circle cx="53" cy="38" r="1.8" fill="#1B3A6B"/><line x1="32" y1="32" x2="50" y2="45" stroke="#1B3A6B" stroke-width=".8"/><circle cx="50" cy="45" r="1.8" fill="#1B3A6B"/><line x1="32" y1="32" x2="45" y2="50" stroke="#1B3A6B" stroke-width=".8"/><circle cx="45" cy="50" r="1.8" fill="#1B3A6B"/><line x1="32" y1="32" x2="39" y2="53" stroke="#1B3A6B" stroke-width=".8"/><circle cx="39" cy="53" r="1.8" fill="#1B3A6B"/><line x1="32" y1="32" x2="32" y2="54" stroke="#1B3A6B" stroke-width=".8"/><circle cx="32" cy="54" r="1.8" fill="#1B3A6B"/><line x1="32" y1="32" x2="25" y2="53" stroke="#1B3A6B" stroke-width=".8"/><circle cx="25" cy="53" r="1.8" fill="#1B3A6B"/><line x1="32" y1="32" x2="19" y2="50" stroke="#1B3A6B" stroke-width=".8"/><circle cx="19" cy="50" r="1.8" fill="#1B3A6B"/><line x1="32" y1="32" x2="14" y2="45" stroke="#1B3A6B" stroke-width=".8"/><circle cx="14" cy="45" r="1.8" fill="#1B3A6B"/><line x1="32" y1="32" x2="11" y2="38" stroke="#1B3A6B" stroke-width=".8"/><circle cx="11" cy="38" r="1.8" fill="#1B3A6B"/><line x1="32" y1="32" x2="10" y2="29" stroke="#1B3A6B" stroke-width=".8"/><circle cx="10" cy="29" r="1.8" fill="#1B3A6B"/><line x1="32" y1="32" x2="12" y2="22" stroke="#1B3A6B" stroke-width=".8"/><circle cx="12" cy="22" r="1.8" fill="#1B3A6B"/><line x1="32" y1="32" x2="17" y2="16" stroke="#1B3A6B" stroke-width=".8"/><circle cx="17" cy="16" r="1.8" fill="#1B3A6B"/><line x1="32" y1="32" x2="24" y2="12" stroke="#1B3A6B" stroke-width=".8"/><circle cx="24" cy="12" r="1.8" fill="#1B3A6B"/><line x1="32" y1="32" x2="37" y2="14" stroke="#1B3A6B" stroke-width=".8"/><circle cx="37" cy="14" r="1.8" fill="#1B3A6B"/><line x1="32" y1="32" x2="49" y2="26" stroke="#1B3A6B" stroke-width=".8"/><circle cx="49" cy="26" r="1.8" fill="#1B3A6B"/><line x1="32" y1="32" x2="49" y2="42" stroke="#1B3A6B" stroke-width=".8"/><circle cx="49" cy="42" r="1.8" fill="#1B3A6B"/><line x1="32" y1="32" x2="42" y2="49" stroke="#1B3A6B" stroke-width=".8"/><circle cx="42" cy="49" r="1.8" fill="#1B3A6B"/><line x1="32" y1="32" x2="27" y2="52" stroke="#1B3A6B" stroke-width=".8"/><circle cx="27" cy="52" r="1.8" fill="#1B3A6B"/><line x1="32" y1="32" x2="22" y2="49" stroke="#1B3A6B" stroke-width=".8"/><circle cx="22" cy="49" r="1.8" fill="#1B3A6B"/><line x1="32" y1="32" x2="15" y2="42" stroke="#1B3A6B" stroke-width=".8"/><circle cx="15" cy="42" r="1.8" fill="#1B3A6B"/><line x1="32" y1="32" x2="15" y2="26" stroke="#1B3A6B" stroke-width=".8"/><circle cx="15" cy="26" r="1.8" fill="#1B3A6B"/><line x1="32" y1="32" x2="27" y2="14" stroke="#1B3A6B" stroke-width=".8"/><circle cx="27" cy="14" r="1.8" fill="#1B3A6B"/><polygon points="32,20 34.4,27.2 42,27.2 36,31.6 38.2,39 32,34.4 25.8,39 28,31.6 22,27.2 29.6,27.2" fill="#1B3A6B"/></svg>
+    <span>DEPCHAIN</span>
+  </div>
+  <div class="nav-links">
+    <a href="#problem">Problem</a>
+    <a href="#platform">Platform</a>
+    <a href="#about">About</a>
+    <a href="#access" class="btn-cta">Request Access</a>
+  </div>
+</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+<div class="hero-grid"></div>
+<div class="hero-glow"></div>
+<div class="wrap" style="position:relative;z-index:1">
+  <div class="reveal">
+    <div class="alert-badge">
+      <span class="alert-dot"></span>
+      <span class="alert-text">GAO REPORT: DoD HAS MAPPED &lt;10% OF SUPPLY CHAINS</span>
+    </div>
+  </div>
+  <div class="reveal" style="transition-delay:.08s">
+    <h1>Your drones depend on China. <span class="glitch-wrap"><span class="glitch-base">You can't see it.</span><span class="glitch-top" aria-hidden="true">You can't see it.</span><span class="glitch-bottom" aria-hidden="true">You can't see it.</span></span></h1>
+  </div>
+  <div class="reveal" style="transition-delay:.16s">
+    <p class="hero-sub">DepChain maps every component in your drone — mine to mission — exposing adversarial-nation chokepoints, compliance gaps, and single points of failure before they shut down your production line.</p>
+  </div>
+  <div class="reveal" style="transition-delay:.24s">
+    <div class="hero-buttons">
+      <a href="#access" class="btn-primary">Request Early Access</a>
+      <a href="#platform" class="btn-secondary">See the Platform →</a>
+    </div>
+  </div>
+  <div class="reveal" style="transition-delay:.32s">
+    <div class="trace-box">
+      <div class="trace-label">LIVE TRACE — BRUSHLESS DC MOTOR → MQ-SERIES DRONE</div>
+      <div class="trace-flow">
+        <div class="trace-node" style="border-left:3px solid var(--red);animation-delay:0s"><div class="trace-node-name" style="color:var(--red)">🇨🇳 RARE EARTH MINE</div><div class="trace-node-loc">Inner Mongolia</div><div class="trace-risk">RISK</div></div>
+        <div class="trace-connector"><div class="trace-dot" style="background:var(--red);animation-delay:0s"></div></div>
+        <div class="trace-node" style="border-left:3px solid var(--red);animation-delay:.12s"><div class="trace-node-name" style="color:var(--red)">🇨🇳 REFINING</div><div class="trace-node-loc">Baotou, China</div><div class="trace-risk">RISK</div></div>
+        <div class="trace-connector"><div class="trace-dot" style="background:var(--red);animation-delay:.15s"></div></div>
+        <div class="trace-node" style="border-left:3px solid #B8860B;animation-delay:.24s"><div class="trace-node-name" style="color:#B8860B">🇯🇵 MAGNET MFG</div><div class="trace-node-loc">Takefu, Japan</div></div>
+        <div class="trace-connector"><div class="trace-dot" style="background:#B8860B;animation-delay:.3s"></div></div>
+        <div class="trace-node" style="border-left:3px solid var(--amber);animation-delay:.36s"><div class="trace-node-name" style="color:var(--amber)">🇨🇳 MOTOR ASSEMBLY</div><div class="trace-node-loc">Nanchang, China</div></div>
+        <div class="trace-connector"><div class="trace-dot" style="background:var(--amber);animation-delay:.45s"></div></div>
+        <div class="trace-node" style="border-left:3px solid var(--green);animation-delay:.48s"><div class="trace-node-name" style="color:var(--green)">🇺🇸 INTEGRATION</div><div class="trace-node-loc">San Diego, USA</div></div>
+        <div class="trace-connector"><div class="trace-dot" style="background:var(--green);animation-delay:.6s"></div></div>
+        <div class="trace-node" style="border-left:3px solid var(--green);animation-delay:.6s"><div class="trace-node-name" style="color:var(--green)">🎯 DEPLOYED</div><div class="trace-node-loc">Theater</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- STATS -->
+<section class="section section--dark">
+<div class="wrap">
+  <div class="stats-grid">
+    <div class="reveal stat"><div class="stat-value" style="color:var(--crimsonLight)" data-count="200" data-suffix="K+">0</div><div class="stat-label">Drones demanded by 2027</div></div>
+    <div class="reveal stat" style="transition-delay:.08s"><div class="stat-value" style="color:var(--amber)" data-count="80" data-suffix="%">0</div><div class="stat-label">Key parts from China</div></div>
+    <div class="reveal stat" style="transition-delay:.16s"><div class="stat-value" style="color:var(--cyan)" data-count="17" data-prefix="$" data-suffix=".9B">0</div><div class="stat-label">Defense VC investment, 2025</div></div>
+    <div class="reveal stat" style="transition-delay:.24s"><div class="stat-value" style="color:var(--crimsonLight)" data-count="10" data-prefix="<" data-suffix="%">0</div><div class="stat-label">Sub-tier suppliers mapped</div></div>
+  </div>
+</div>
+</section>
+
+<!-- PROBLEM -->
+<section class="section" id="problem">
+<div class="wrap">
+  <div class="reveal">
+    <div class="label" style="color:var(--crimsonLight)">The Problem</div>
+    <h2 style="font-size:32px;font-weight:800;margin-bottom:12px;color:var(--white);max-width:620px">The Pentagon can't see what's inside its own drones</h2>
+    <p style="font-size:15px;color:var(--textMuted);max-width:580px;line-height:1.7;margin-bottom:48px">GAO-25-107283 found DoD supply chain mapping provides "little insight" into the vast majority of suppliers. Real crises have already proven the cost.</p>
+  </div>
+  <div class="cards-grid">
+    <div class="reveal crisis-card" style="border-top:2px solid var(--red)"><div class="crisis-tag" style="color:var(--red)">REAL EVENT · OCT 2024</div><div class="crisis-title">Skydio Battery Crisis</div><div class="crisis-body">China sanctioned America's largest drone maker. Battery supplier Dongguan Poweramp cut supply overnight. Skydio rationed batteries for months — $1.2B in bookings at risk.</div><div class="crisis-stat" style="background:rgba(220,53,69,.05);border:1px solid rgba(220,53,69,.13);color:var(--red)">1 supplier · 0 alternatives mapped</div></div>
+    <div class="reveal crisis-card" style="border-top:2px solid var(--amber);transition-delay:.1s"><div class="crisis-tag" style="color:var(--amber)">ACTIVE RISK</div><div class="crisis-title">Gauntlet Concentration</div><div class="crisis-body">25 vendors selected to build 200,000+ drones. Radio module supplier Doodle Labs serves 7+ competing teams. One failure cascades across the entire program.</div><div class="crisis-stat" style="background:rgba(212,145,58,.05);border:1px solid rgba(212,145,58,.13);color:var(--amber)">7+ vendors · 1 radio supplier</div></div>
+    <div class="reveal crisis-card" style="border-top:2px solid var(--red);transition-delay:.2s"><div class="crisis-tag" style="color:var(--red)">STRUCTURAL</div><div class="crisis-title">Rare Earth Chokepoint</div><div class="crisis-body">China controls 85% of rare earth production and 90% of processing. Every drone motor uses neodymium magnets. April 2025 export controls directly threatened Western defense.</div><div class="crisis-stat" style="background:rgba(220,53,69,.05);border:1px solid rgba(220,53,69,.13);color:var(--red)">85% mining · 90% processing</div></div>
+  </div>
+</div>
+</section>
+
+<!-- PLATFORM -->
+<section class="section section--dark" id="platform">
+<div class="wrap">
+  <div class="reveal">
+    <div class="label" style="color:var(--navy)">The Platform</div>
+    <h2 style="font-size:32px;font-weight:800;margin-bottom:12px;color:var(--white);max-width:580px">Mine-to-mission visibility in seven screens</h2>
+    <p style="font-size:15px;color:var(--textMuted);max-width:540px;line-height:1.7;margin-bottom:48px">DepChain connects public intelligence, supplier data, and AI analysis into a single operational picture.</p>
+  </div>
+  <div class="screens-grid">
+    <div class="reveal screen-card" style="--accent:var(--navy)"><div class="screen-num" style="color:var(--navy)">SCREEN 01</div><div class="screen-title">Global Command View</div><div class="screen-desc">Geospatial map with animated supply lanes, risk-coded nodes, and real-time alerts.</div></div>
+    <div class="reveal screen-card" style="transition-delay:.06s;--accent:var(--cyan)"><div class="screen-num" style="color:var(--cyan)">SCREEN 02</div><div class="screen-title">Supplier Network Graph</div><div class="screen-desc">Multi-tier relationship mapping. Expand sub-tier suppliers to reveal hidden dependencies.</div></div>
+    <div class="reveal screen-card" style="transition-delay:.12s;--accent:var(--amber)"><div class="screen-num" style="color:var(--amber)">SCREEN 03</div><div class="screen-title">Risk Scoring Dashboard</div><div class="screen-desc">Composite scores: geopolitical exposure, single-source dependency, compliance status.</div></div>
+    <div class="reveal screen-card" style="transition-delay:.18s;--accent:var(--green)"><div class="screen-num" style="color:var(--green)">SCREEN 04</div><div class="screen-title">Component Traceability</div><div class="screen-desc">Trace every component from raw material through every supplier tier to deployed drone.</div></div>
+    <div class="reveal screen-card" style="transition-delay:.24s;--accent:var(--crimsonLight)"><div class="screen-num" style="color:var(--crimsonLight)">SCREEN 05</div><div class="screen-title">AI Command Center</div><div class="screen-desc">Natural language queries. 'Show me all single-source components from China' → instant analysis.</div></div>
+    <div class="reveal screen-card" style="transition-delay:.3s;--accent:var(--amber)"><div class="screen-num" style="color:var(--amber)">SCREEN 06</div><div class="screen-title">Disruption Simulation</div><div class="screen-desc">Select a scenario — sanctions, export controls — watch cascade impact. AI recommends alternatives.</div></div>
+    <div class="reveal screen-card" style="transition-delay:.36s;--accent:var(--green)"><div class="screen-num" style="color:var(--green)">SCREEN 07</div><div class="screen-title">Compliance Audit Trail</div><div class="screen-desc">ITAR, DFARS, NDAA §848, Blue UAS tracking per supplier with automated gap identification.</div></div>
+  </div>
+</div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section">
+<div class="wrap">
+  <div class="reveal">
+    <div class="label" style="color:var(--amber)">How It Works</div>
+    <h2 style="font-size:32px;font-weight:800;margin-bottom:48px;color:var(--white)">Detect · Trace · Resolve</h2>
+  </div>
+  <div class="acts-grid">
+    <div class="reveal act-card"><div class="act-bg" style="color:var(--red)">01</div><div class="act-badge" style="background:rgba(220,53,69,.07);border:1px solid rgba(220,53,69,.15);color:var(--red)">THE ALERT</div><div class="act-title">Risk surfaces automatically</div><div class="act-body">China announces export controls on rare earths. DepChain flags three components in your program. Risk score jumps from Green to Amber.</div></div>
+    <div class="reveal act-card" style="transition-delay:.12s"><div class="act-bg" style="color:var(--amber)">02</div><div class="act-badge" style="background:rgba(212,145,58,.07);border:1px solid rgba(212,145,58,.15);color:var(--amber)">THE TRACE</div><div class="act-title">Follow the component</div><div class="act-body">Click the flagged motor. Full journey: rare earth mined in Inner Mongolia → refined in Baotou → magnets in Japan → motor in Nanchang → integrated in San Diego. Chinese refining = single point of failure.</div></div>
+    <div class="reveal act-card" style="transition-delay:.24s"><div class="act-bg" style="color:var(--green)">03</div><div class="act-badge" style="background:rgba(46,139,87,.07);border:1px solid rgba(46,139,87,.15);color:var(--green)">THE RESOLUTION</div><div class="act-title">AI recommends alternatives</div><div class="act-body">Two qualified alternatives — MP Materials (USA) and Lynas (Australia). What-if simulation: 3 weeks added lead time, eliminates adversarial dependency. One click generates the recommendation.</div></div>
+  </div>
+</div>
+</section>
+
+<!-- DATA + COMPLIANCE -->
+<section class="section section--dark">
+<div class="wrap">
+  <div class="two-col">
+    <div class="reveal">
+      <div class="label" style="color:var(--cyan)">Data Sources</div>
+      <h3 style="font-size:22px;font-weight:700;color:var(--white);margin-bottom:16px">Government-grade intelligence</h3>
+      <div class="tag-wrap">
+        <div class="tag">USASpending.gov</div><div class="tag">SAM.gov</div><div class="tag">Census Trade API</div><div class="tag">FPDS</div><div class="tag">Blue UAS List</div><div class="tag">SBIR.gov</div><div class="tag">OFAC Sanctions</div><div class="tag">BIS Entity List</div><div class="tag">FASC List</div>
+      </div>
+    </div>
+    <div class="reveal" style="transition-delay:.12s">
+      <div class="label" style="color:var(--amber)">Compliance</div>
+      <h3 style="font-size:22px;font-weight:700;color:var(--white);margin-bottom:16px">Every regulatory framework</h3>
+      <div class="tag-wrap">
+        <div class="tag-color" style="border:1px solid rgba(220,53,69,.15);color:var(--red)">NDAA §848</div>
+        <div class="tag-color" style="border:1px solid rgba(220,53,69,.15);color:var(--red)">ITAR</div>
+        <div class="tag-color" style="border:1px solid rgba(212,145,58,.15);color:var(--amber)">DFARS</div>
+        <div class="tag-color" style="border:1px solid rgba(27,58,107,.25);color:var(--navy)">Blue UAS</div>
+        <div class="tag-color" style="border:1px solid rgba(220,53,69,.15);color:var(--red)">OFAC/BIS</div>
+        <div class="tag-color" style="border:1px solid rgba(212,145,58,.15);color:var(--amber)">CMMC</div>
+        <div class="tag-color" style="border:1px solid rgba(220,53,69,.15);color:var(--red)">ASDA/FASC</div>
+        <div class="tag-color" style="border:1px solid rgba(212,145,58,.15);color:var(--amber)">FCC Covered</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ABOUT -->
+<section class="section" id="about">
+<div class="wrap">
+  <div class="two-col">
+    <div class="reveal">
+      <div class="label" style="color:var(--green)">Why DepChain</div>
+      <h2 style="font-size:28px;font-weight:800;margin-bottom:18px;color:var(--white);line-height:1.2">Built by someone who's been on the factory floor</h2>
+      <p style="font-size:14px;color:var(--textMuted);line-height:1.7;margin-bottom:20px">DepChain is built by a technical founder with manufacturing experience. Every screen is designed for program managers, supplier engineers, and compliance officers.</p>
+      <div class="feature-item"><div class="feature-title">BOM-native approach</div><div class="feature-desc">Start from the bill of materials. Map from the component out.</div></div>
+      <div class="feature-item"><div class="feature-title">Purpose-built for drones</div><div class="feature-desc">Motors, batteries, ESCs, radios — not defense broadly.</div></div>
+      <div class="feature-item"><div class="feature-title">$0 prototype, real data</div><div class="feature-desc">Free government APIs. No mock-ups. Real intelligence.</div></div>
+      <div class="feature-item"><div class="feature-title">Edge-ready</div><div class="feature-desc">Runs on Jetson Orin at forward operating bases. DDIL-capable.</div></div>
+    </div>
+    <div class="reveal" style="transition-delay:.16s">
+      <div class="label" style="color:var(--amber)">Market Validation</div>
+      <h3 style="font-size:22px;font-weight:700;color:var(--white);margin-bottom:18px">The government is asking for this product</h3>
+      <div class="quote"><p>GAO-25-107283 documents the visibility gap — effectively an RFP for this product.</p><cite>U.S. GAO, July 2025</cite></div>
+      <div class="quote"><p>Defense Business Board recommends digital BOMs, standardized data governance, modular tech stacks.</p><cite>DBB Supply Chain Illumination, Jan 2025</cite></div>
+      <div class="quote"><p>DIU awarded prototype contracts for AI logistics planning via Commercial Solutions Opening.</p><cite>DIU JSDT Program, Feb 2026</cite></div>
+      <div class="quote"><p>Drone Dominance Program RFI explicitly requested feedback on 'supply chain security.'</p><cite>DoD, 2025</cite></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- CTA -->
+<section class="section" id="access" style="position:relative">
+<div class="cta-glow"></div>
+<div class="wrap">
+  <div class="reveal cta-inner">
+    <div class="label" style="color:var(--crimsonLight)">Early Access</div>
+    <h2 style="font-size:32px;font-weight:800;margin-bottom:14px;color:var(--white)">See what's inside your supply chain</h2>
+    <p style="font-size:15px;color:var(--textMuted);line-height:1.7;margin-bottom:28px">We're onboarding design partners — drone OEMs and component suppliers with NDAA compliance obligations. Request access and we'll map your first program free.</p>
+    <div id="cta-form-wrap">
+      <div class="cta-form">
+        <input type="email" id="email" class="cta-input" placeholder="your@company.com">
+        <button onclick="submitEmail()" class="cta-btn">Request Access</button>
+      </div>
+    </div>
+    <p style="font-size:11px;color:var(--textDim);margin-top:14px">For drone manufacturers, component suppliers, and defense program managers.</p>
+  </div>
+</div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+<div class="wrap footer-inner">
+  <div class="footer-logo">
+    <svg width="35" height="20" viewBox="0 0 64 64" fill="none"><polygon points="32,20 34.4,27.2 42,27.2 36,31.6 38.2,39 32,34.4 25.8,39 28,31.6 22,27.2 29.6,27.2" fill="#1B3A6B"/><line x1="32" y1="32" x2="32" y2="10" stroke="#1B3A6B" stroke-width=".8"/><circle cx="32" cy="10" r="1.8" fill="#1B3A6B"/><line x1="32" y1="32" x2="52" y2="22" stroke="#1B3A6B" stroke-width=".8"/><circle cx="52" cy="22" r="1.8" fill="#1B3A6B"/><line x1="32" y1="32" x2="52" y2="42" stroke="#1B3A6B" stroke-width=".8"/><circle cx="52" cy="42" r="1.8" fill="#1B3A6B"/><line x1="32" y1="32" x2="32" y2="54" stroke="#1B3A6B" stroke-width=".8"/><circle cx="32" cy="54" r="1.8" fill="#1B3A6B"/><line x1="32" y1="32" x2="12" y2="42" stroke="#1B3A6B" stroke-width=".8"/><circle cx="12" cy="42" r="1.8" fill="#1B3A6B"/><line x1="32" y1="32" x2="12" y2="22" stroke="#1B3A6B" stroke-width=".8"/><circle cx="12" cy="22" r="1.8" fill="#1B3A6B"/></svg>
+    <span>DEPCHAIN</span>
+  </div>
+  <div class="footer-copy">© 2026 DepChain · Supply chain visibility for defense drones</div>
+  <div class="footer-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Contact</a></div>
+</div>
+</footer>
+
+<script>
+// Scroll-aware nav
+window.addEventListener('scroll',()=>{document.getElementById('nav').classList.toggle('scrolled',window.scrollY>32)});
+
+// Intersection observer for reveals
+const obs=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+// Animated counters
+const cObs=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){animateCounter(e.target);cObs.unobserve(e.target)}})},{threshold:.5});
+document.querySelectorAll('.stat-value').forEach(el=>cObs.observe(el));
+function animateCounter(el){
+  const end=parseInt(el.dataset.count);
+  const pre=el.dataset.prefix||'';
+  const suf=el.dataset.suffix||'';
+  let c=0;const step=end/50;
+  const iv=setInterval(()=>{c+=step;if(c>=end){el.textContent=pre+end.toLocaleString()+suf;clearInterval(iv)}else{el.textContent=pre+Math.floor(c).toLocaleString()+suf}},30);
+}
+
+// Email submit
+function submitEmail(){
+  const email=document.getElementById('email').value;
+  if(email.includes('@')){
+    document.getElementById('cta-form-wrap').innerHTML='<div class="cta-success"><span style="font-size:20px;color:var(--green)">✓</span><div style="text-align:left"><div style="font-weight:700;color:var(--green);font-size:14px">You\'re on the list</div><div style="font-size:12px;color:var(--textMuted)">We\'ll reach out within 48 hours.</div></div></div>';
+  }
+}
+document.getElementById('email')?.addEventListener('keydown',e=>{if(e.key==='Enter')submitEmail()});
+
+// Screen card hover colors
+document.querySelectorAll('.screen-card').forEach(el=>{
+  const accent=getComputedStyle(el).getPropertyValue('--accent');
+  el.addEventListener('mouseenter',()=>{el.style.borderColor=accent+'80'});
+  el.addEventListener('mouseleave',()=>{el.style.borderColor=''});
+});
+</script>
+</body>
+</html>
